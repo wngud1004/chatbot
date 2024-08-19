@@ -97,7 +97,7 @@ else:
         else:
             id = 2  # 리스트가 비어 있는 경우, id를 1로 설정
 
-        documnet = 'response' + id
+        documnet = 'response' + str(id)
 
         # Firestore에 데이터 작성
         doc_ref = db.collection('chatbot').document(documnet)

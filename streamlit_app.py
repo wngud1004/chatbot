@@ -31,22 +31,6 @@ else:
     # Firestore 데이터베이스 클라이언트 가져오기
     db = firestore.client()
 
-    
-    # 컬렉션의 모든 문서를 가져옴
-    collection_ref = db.collection('chatbot')
-    docs = collection_ref.stream()
-
-    # 모든 문서를 저장할 배열
-    documents = []
-
-    # 문서를 순회하며 배열에 추가
-    for doc in docs:
-        doc_data = doc.to_dict()
-        documents.append(doc_data)
-
-    # 배열 형식으로 저장된 모든 문서를 출력
-    print(documents)
-
     # Create an OpenAI client.
     client = OpenAI(api_key=openai_api_key)
 
@@ -67,7 +51,7 @@ else:
         # Store and display the current prompt.
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
-            st.markdown(documents)
+            st.markdown(prompt)
 
         # Generate a response using the OpenAI API.
         stream = client.chat.completions.create(

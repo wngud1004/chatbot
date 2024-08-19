@@ -21,6 +21,21 @@ if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
 else:
 
+    # Firebase 인증서 설정 및 초기화
+    cred = credentials.Certificate("auth.json")
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app(cred)
+    else:
+        print("Firebase app is already initialized.")
+
+    # Firestore 데이터베이스 클라이언트 가져오기
+    db = firestore.client()
+
+    
+    # 컬렉션의 모든 문서를 가져옴
+    collection_ref = db.collection('chatbot')
+    docs = collection_ref.stream()
+
     # Create an OpenAI client.
     client = OpenAI(api_key=openai_api_key)
 
@@ -41,7 +56,7 @@ else:
         # Store and display the current prompt.
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
-            st.markdown(prompt)
+            st.markdown(docs)
 
         # Generate a response using the OpenAI API.
         stream = client.chat.completions.create(
@@ -58,16 +73,6 @@ else:
         with st.chat_message("assistant"):
             response = st.write_stream(stream)
         st.session_state.messages.append({"role": "assistant", "content": response})
-
-                # Firebase 인증서 설정 및 초기화
-        cred = credentials.Certificate("auth.json")
-        if not firebase_admin._apps:
-            firebase_admin.initialize_app(cred)
-        else:
-            print("Firebase app is already initialized.")
-
-        # Firestore 데이터베이스 클라이언트 가져오기
-        db = firestore.client()
 
         # 컬렉션의 모든 문서를 가져옴
         collection_ref = db.collection('chatbot')

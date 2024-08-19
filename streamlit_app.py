@@ -1,6 +1,10 @@
 import streamlit as st
 from openai import OpenAI
 
+import firebase_admin 
+from firebase_admin import credentials
+from firebase_admin import firestore
+
 # Show title and description.
 st.title("💬 Chatbot")
 st.write(
@@ -54,3 +58,31 @@ else:
         with st.chat_message("assistant"):
             response = st.write_stream(stream)
         st.session_state.messages.append({"role": "assistant", "content": response})
+
+                # Firebase 인증서 설정 및 초기화
+        cred = credentials.Certificate("auth.json")
+        if not firebase_admin._apps:
+            firebase_admin.initialize_app(cred)
+        else:
+            print("Firebase app is already initialized.")
+
+        # Firestore 데이터베이스 클라이언트 가져오기
+        db = firestore.client()
+
+        collection_ref = db.collection('chatbot')  # 해당하는 컬렉션 이름을 넣으세요
+        docs = collection_ref.order_by('response/id', direction=firestore.Query.DESCENDING).limit(1).get()
+
+        if docs:
+            # 가장 최근 문서의 'response/id' 필드 값을 가져옵니다
+            last_doc_id = docs[0].to_dict().get('response', {}).get('id')
+
+        id = last_doc_id + 1
+
+        # Firestore에 데이터 작성
+        doc_ref = db.collection('chatbot').document('response')
+        doc_ref.set({
+            'id': id,
+            'answer': prompt,
+            'response': response
+        })
+

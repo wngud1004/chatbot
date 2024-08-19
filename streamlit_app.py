@@ -73,6 +73,7 @@ else:
         docs = collection_ref.stream()
 
         response_ids = []
+        id = 2
 
         for doc in docs:
             doc_data = doc.to_dict()
@@ -91,8 +92,9 @@ else:
             else:
                 print(f"'response' field is missing or not a dictionary in document with ID: {doc.id}")
         
-
-        id = max(response_ids) + 1
+        print(response_ids)
+        if response is not None:
+            id = max(response_ids) + 1
 
         # Firestore에 데이터 작성
         doc_ref = db.collection('chatbot').document('response')

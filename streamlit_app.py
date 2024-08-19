@@ -113,6 +113,7 @@ else:
         # Firestore에 데이터 작성
         doc_ref = db.collection('chatbot').document(str(id))
         doc_ref.set({
+            'id': id,
             'answer': prompt,
             'response': response
         })

@@ -31,20 +31,6 @@ else:
     # Firestore 데이터베이스 클라이언트 가져오기
     db = firestore.client()
 
-    # 컬렉션의 모든 문서를 가져옴
-    collection_ref = db.collection('chatbot')
-    docs = collection_ref.stream()
-
-    # 숫자로 된 필드 이름을 수집하기 위한 리스트
-    documents = []
-    field_numbers = 0
-
-    for doc in docs:
-        doc_data = doc.to_dict()
-        documents.append(doc_data)
-        field_numbers = max(doc['id'] for doc in documents)
-
-
     # Create an OpenAI client.
     client = OpenAI(api_key=openai_api_key)
 
@@ -83,10 +69,23 @@ else:
             response = st.write_stream(stream)
         st.session_state.messages.append({"role": "assistant", "content": response})
 
+        # 컬렉션의 모든 문서를 가져옴
+        collection_ref = db.collection('chatbot')
+        docs = collection_ref.stream()
+
+        # 숫자로 된 필드 이름을 수집하기 위한 리스트
+        documents = []
+        field_numbers = 0
+
+        for doc in docs:
+            doc_data = doc.to_dict()
+            documents.append(doc_data)
+            field_numbers = max(doc['id'] for doc in documents)
+
 
         # 가장 높은 숫자를 찾아 다음 필드 이름 생성
         if field_numbers != 0:
-            id = max(field_numbers) + 1
+            id = field_numbers + 1
         else:
             id = 1  # 숫자 필드가 없는 경우 1로 시작
 

@@ -76,8 +76,21 @@ else:
 
         for doc in docs:
             doc_data = doc.to_dict()
-            response_id = doc_data.get('response', {}).get('id', None)
             
+            # 디버깅 정보를 위한 출력
+            print(f"Document ID: {doc.id}, Document Data: {doc_data}")
+
+            # 'response' 필드가 존재하는지 확인
+            if 'response' in doc_data and isinstance(doc_data['response'], dict):
+                response_id = doc_data['response'].get('id', None)
+                
+                if response_id is not None:
+                    response_ids.append(response_id)
+                else:
+                    print(f"No 'id' found in 'response' field in document with ID: {doc.id}")
+            else:
+                print(f"'response' field is missing or not a dictionary in document with ID: {doc.id}")
+        
 
         id = response_id + 1
 

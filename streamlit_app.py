@@ -197,8 +197,10 @@ else:
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": custom_prompt},  # 시스템 메시지로 프롬프트 엔지니어링 적용
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
+                *[
+                    {"role": m["role"], "content": m["content"]}
+                    for m in st.session_state.messages
+                ]
             ],
             stream=True,
         )

@@ -36,10 +36,12 @@ else:
     docs = collection_ref.stream()
 
     # 숫자로 된 필드 이름을 수집하기 위한 리스트
+    documents = []
     field_numbers = []
 
     for doc in docs:
         doc_data = doc.to_dict()
+        documents.append(doc_data)
 
         # 숫자만으로 된 필드 이름을 확인
         for key in doc_data.keys():
@@ -70,7 +72,7 @@ else:
         # Store and display the current prompt.
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
-            st.markdown(field_numbers)
+            st.markdown(documents)
 
         # Generate a response using the OpenAI API.
         stream = client.chat.completions.create(

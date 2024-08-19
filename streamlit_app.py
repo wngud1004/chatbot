@@ -69,14 +69,17 @@ else:
         # Firestore 데이터베이스 클라이언트 가져오기
         db = firestore.client()
 
-        collection_ref = db.collection('chatbot')  # 해당하는 컬렉션 이름을 넣으세요
-        docs = collection_ref.order_by('response/id', direction=firestore.Query.DESCENDING).limit(1).get()
+        collection_ref = db.collection('chatbot')
+        docs = collection_ref.stream()
 
-        if docs:
-            # 가장 최근 문서의 'response/id' 필드 값을 가져옵니다
-            last_doc_id = docs[0].to_dict().get('response', {}).get('id')
+        response_ids = []
 
-        id = last_doc_id + 1
+        for doc in docs:
+            doc_data = doc.to_dict()
+            response_id = doc_data.get('response', {}).get('id', None)
+            
+
+        id = response_id + 1
 
         # Firestore에 데이터 작성
         doc_ref = db.collection('chatbot').document('response')

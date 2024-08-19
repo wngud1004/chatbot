@@ -8,9 +8,9 @@ from firebase_admin import firestore
 # Show title and description.
 st.title("💬 Chatbot")
 st.write(
-    "This is a simple chatbot that uses OpenAI's GPT-3.5 model to generate responses. "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-    "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
+    "OpenAI의 GPT-3.5 모델을 활용해 반응을 생성하는 간단한 챗봇입니다."
+    "이 앱을 만드려면 OpenAI API 키를 제공해야 하는데, [여기](https://platform.openai.com/account/api-keys)에서 얻을 수 있습니다."
+    "대진대학교 컴공터공학과 정보를 넣었으니 관련 질문을 해보세요!"
 )
 
 openai_api_key = st.secrets["openai_api_key"]

@@ -56,7 +56,7 @@ else:
         # Store and display the current prompt.
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
-            st.markdown(docs[0])
+            st.markdown(prompt)
 
         # Generate a response using the OpenAI API.
         stream = client.chat.completions.create(

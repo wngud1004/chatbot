@@ -69,40 +69,34 @@ else:
         # Firestore 데이터베이스 클라이언트 가져오기
         db = firestore.client()
 
+        # 컬렉션의 모든 문서를 가져옴
         collection_ref = db.collection('chatbot')
         docs = collection_ref.stream()
 
-        response_ids = []
-        id = 2
+        # 숫자로 된 필드 이름을 수집하기 위한 리스트
+        field_numbers = []
 
         for doc in docs:
             doc_data = doc.to_dict()
-            
-            # 디버깅 정보를 위한 출력
-            print(f"Document ID: {doc.id}, Document Data: {doc_data}")
 
-            # 'response' 필드가 존재하는지 확인
-            if 'response' in doc_data and isinstance(doc_data['response'], dict):
-                response_id = doc_data['response'].get('id', None)
-                
-                if response_id is not None:
-                    response_ids.append(response_id)
-                else:
-                    print(f"No 'id' found in 'response' field in document with ID: {doc.id}")
-            else:
-                print(f"'response' field is missing or not a dictionary in document with ID: {doc.id}")
-        
-        if response_ids:
-            id = max(response_ids) + 1
+            # 숫자만으로 된 필드 이름을 확인
+            for key in doc_data.keys():
+                try:
+                    # 필드 이름이 숫자인지 확인
+                    number = int(key)
+                    field_numbers.append(number)
+                except ValueError:
+                    pass  # 필드 이름이 숫자가 아닌 경우 건너뛰기
+
+        # 가장 높은 숫자를 찾아 다음 필드 이름 생성
+        if field_numbers:
+            id = max(field_numbers) + 1
         else:
-            id = 2  # 리스트가 비어 있는 경우, id를 1로 설정
-
-        documnet = 'response' + str(id)
+            id = 1  # 숫자 필드가 없는 경우 1로 시작
 
         # Firestore에 데이터 작성
-        doc_ref = db.collection('chatbot').document(documnet)
+        doc_ref = db.collection('chatbot').document(str(id))
         doc_ref.set({
-            'id': id,
             'answer': prompt,
             'response': response
         })

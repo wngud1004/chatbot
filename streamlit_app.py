@@ -92,7 +92,7 @@ else:
                 print(f"'response' field is missing or not a dictionary in document with ID: {doc.id}")
         
 
-        id = response_id + 1
+        id = max(response_ids) + 1
 
         # Firestore에 데이터 작성
         doc_ref = db.collection('chatbot').document('response')

@@ -1,3 +1,4 @@
 streamlit
 openai
 firebase_admin
+fastapi

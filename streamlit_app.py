@@ -1,5 +1,6 @@
 import streamlit as st
 from openai import OpenAI
+from fastapi import FastAPI
 
 import firebase_admin 
 from firebase_admin import credentials
@@ -14,6 +15,9 @@ st.write(
 )
 
 openai_api_key = st.secrets["openai_api_key"]
+
+app = FastAPI()
+
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
 else:
@@ -238,4 +242,9 @@ else:
             'answer': prompt,
             'response': response
         })
+
+
+        @app.get('/test')
+        def test(request):
+            return {'test':'test'}
 
